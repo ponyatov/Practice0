@@ -1,0 +1,15 @@
+{
+    "recommendations": [
+        "ryuta46.multi-command",
+        "stkb.rewrap",
+        // "auchenberg.vscode-browser-preview",
+        // "humao.rest-client",
+        // "ms-azuretools.vscode-docker",
+        // "tabnine.tabnine-vscode",
+        "redhat.java",
+        // "adelphes.android-dev-ext",
+        // "mike-lischke.vscode-antlr4",
+        "rust-lang.rust",
+        "bungcip.better-toml",
+    ]
+}
