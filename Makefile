@@ -101,6 +101,7 @@ $(OS)_install:
 	sudo apt install -u `cat apt.txt`
 
 MERGE  = Makefile README.md apt.txt .gitignore .vscode $(S)
+MERGE += doc src tmp
 
 .PHONY: dev
 dev:
