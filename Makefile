@@ -112,6 +112,12 @@ ponymuck:
 	git push -v
 	git checkout $@
 
+.PHONY: release
+release:
+	git tag $(NOW)-$(REL)
+	git push -v && git push -v --tags
+	$(MAKE) ponymuck
+
 SURNAME = $(shell echo "$(AUTHOR)" | sed "s/\ //g" )
 ZIP     = tmp/TA.$(MODULE).$(SURNAME).zip
 .PHONY: zip
