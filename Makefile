@@ -34,60 +34,65 @@ ANTLR   = $(which antlr4)
 JFLAGS += -source 8 -target 1.8
 # / cfg
 
-
+###############################################################################
 
 P0    = ../Practice0
 TEST  = $(P0)/Test
 ABOUT = $(TEST)/about.me
 
-AUTHOR = "Dmitry Ponyatov"
+AUTHOR     = "Dmitry Ponyatov"
 UNIVERCITY = "SSAU"
-YEAR = 2003
+YEAR       = 2003
 
-.PHONY: all
+.PHONY: all dirs file move about year56 year7 cmp
+
 all:
-	$(MAKE) dirs
-	$(MAKE) $(ABOUT)
-	$(MAKE) move about year56 year7 cmp
+	$(MAKE) dirs file
+	$(MAKE) move about cpmv year year7 cmp
 
-# p.1,2
-.PHONY: dirs
+# p.1,2 create dirs
 dirs:
 	mkdir -p $(P0) $(TEST)
 
-# p.2
+# p.2 create about.me
+file: $(ABOUT)
 $(ABOUT):
-	echo $(AUTHOR) > $@
+	echo $(AUTHOR)      > $@
 	echo $(UNIVERCITY) >> $@
 
-# p.3
-.PHONY: move
+# p.3 move & read-only
 move: $(P0)/about.me
 $(P0)/about.me: $(ABOUT)
 	mv $< $@ && chmod -w $@
 
-# p.4
-.PHONY: about
+# p.4 print AUTHOR @ UNIVERCITY
 about: $(P0)/about.me
 	echo `head -n1 $<` "учился в" `tail -n1 $<`
 
-# p.5,6
-.PHONY: year56
-year56: $(TEST)/about_.me
+# p.5 copy & rename
+.PHOPNY: cpmv
+cpmv: $(TEST)/about_.me
 $(TEST)/about_.me: $(P0)/about.me
-	cp $< $@ && touch $@
-	chmod +w $@ ; echo $(YEAR) >> $@
+	cp $< $(TEST)/about.me
+	mv $(TEST)/about.me $@
 
-# p.7
-.PHONY: year7
-year7: $(P0)/about.me
+# p.6 add year
+.PHONY: year
+year: $(TEST)/about_.me
 	chmod +w $< ; echo $(YEAR) >> $<
 
-# p.8
+# p.7 remove read-only & repeat p.5,6
+.PHONY: year7
+year7: $(P0)/about.me
+	chmod +w $<
+	$(MAKE) cpmv year
+
+# p.8 compare files
 .PHONY: cmp
 cmp: $(P0)/about.me $(TEST)/about_.me
-	fc $^
+	diff $^
 
+###############################################################################
 
 .PHONY: install $(OS)_install
 install: $(OS)_install
@@ -98,10 +103,21 @@ $(OS)_install:
 MERGE  = Makefile README.md apt.txt .gitignore .vscode $(S)
 
 .PHONY: dev
-dev: ponymuck
+dev:
 	git checkout $@
 	git checkout ponymuck -- $(MERGE)
 
 .PHONY: ponymuck
 ponymuck:
+	git push -v
 	git checkout $@
+
+SURNAME = $(shell echo "$(AUTHOR)" | sed "s/\ //g" )
+ZIP     = tmp/TA.$(MODULE).$(SURNAME).zip
+.PHONY: zip
+zip:
+	rm -f $(ZIP)
+	git archive \
+		--format   zip \
+		--output $(ZIP) \
+	HEAD
